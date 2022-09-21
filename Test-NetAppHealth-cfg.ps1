@@ -13,7 +13,7 @@ $AggregateFullPercentageError = 95                          #Percentage full bef
 $AggregateFullPercentageWarning = 85                        #Percentage full before Warning
 
 #The management IPs of the controllers that you want to monitor
-$NetAppControllers = "10.172.2.185","10.136.18.60"
+$NetAppControllers = "11.111.1.111","22.222.2.22"
 
 #Report settings
 #Determines whether the script logs it's activities using logfile described below
@@ -23,9 +23,9 @@ $logfile = "C:\Source\Scripts\netapp\netapp_health.log"
 #Location of transcript file for script (shows command line output for script
 $TranscriptFile = "C:\Source\Scripts\netapp\netapp_health_transcript.log"
 #Reportsubject = the heading for the html report
-$reportsubject = "NetApp Health (MSD)"
+$reportsubject = "NetApp Health"
 #Enter the URL of the report for use from the Web (this is the URL of the webpage this report will output)
-$ReportURL = "http://BOH2-EUD-VMAN01\Monitor\netapphealth.html"
+$ReportURL = "http://SERVER_WHERE_SCRIPT_IS_RUNNING\Monitor\netapphealth.html"
 #ReportMode - Set to $true to generate a HTML report. Uses the name of the Report file (see below)
 $ReportMode=$true
 #ReportFile - name of file to output html report to
@@ -35,7 +35,7 @@ $SendEmail=$true
 #Only sends the email report if at least one error or warning was detected.
 $AlertsOnly=$true
 #URL of file to output errors report to (this is a separate file for error output from the array)
-$ErrorsURL = "http://BOH2-EUD-VMAN01\Monitor\netappreporterrors.html"
+$ErrorsURL = "http://SERVER_WHERE_SCRIPT_IS_RUNNING\Monitor\netappreporterrors.html"
 #Name of file to output errors report to (this is a separate file for error output from the array)
 $ErrorsFile="C:\inetpub\wwwroot\monitor\netappreporterrors.html"
 
@@ -45,11 +45,11 @@ $ErrorsFile="C:\inetpub\wwwroot\monitor\netappreporterrors.html"
 #...................................
 
 #Send email to this address
-$recipients = "ITS.Datacentre.Services@cobham.com"
+$recipients = "someone@doamin.com"
 #Send email from this address
-$fromaddress = "CMS-NetApp-Alerts@cobham.com"
+$fromaddress = "fromaddress-Alerts@domain.com"
 #Send email using this relay host
-$smtpserver = "smtp.eu.cobham.net"
+$smtpserver = "smtp.domain.com"
 
 
 #...................................
@@ -57,4 +57,4 @@ $smtpserver = "smtp.eu.cobham.net"
 #...................................
 
 #Login to monitoring user (RO user "monitoring-user" setup on NetApp clusters)
-$NetAppCredential = Import-CliXml -Path c:\source\scripts\Credentials\SVC-VMVRRW-001\netapp-monitoring-user.xml
+$NetAppCredential = Import-CliXml -Path c:\source\scripts\Credentials\netapp-monitoring-user.xml
