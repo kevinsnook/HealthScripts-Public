@@ -1,0 +1,2 @@
+rem C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -command "C:\Source\Scripts\simplivity\script_health\test-simplivityhealth.ps1 -AlertsOnly $true -log $true"
+C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -command "C:\Source\Scripts\simplivity\script_health\test-simplivityhealth.ps1 -ConfigFile C:\Source\Scripts\simplivity\script_health\test-simplivityhealth-cfg.ps1"

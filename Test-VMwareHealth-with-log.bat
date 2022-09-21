@@ -1,0 +1,2 @@
+rem C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -command "C:\Source\Scripts\vmware\script_health\Test-VMwareHealth.ps1 -AlertsOnly $true -log $true"
+C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -command "C:\Source\Scripts\vmware\script_health\Test-VMwareHealth.ps1 -ConfigFile C:\Source\Scripts\VMware\Script_Health\Test-VMwareHealth-cfg.ps1"
