@@ -381,7 +381,27 @@ foreach ($UCSMServer in $UCSMServers){
                 }
             
             }
+        
+        #Licences
+        $LicenceMO = Get-UcsLicense
+        foreach ($Licence in $LicenceMO){
+            if ($Log) {Write-Logfile "$($Licence.Feature) (SKU: $($Licence.Sku))"} 
+            if ($Licence.UsedQuant -gt $Licence.AbsQuant){
+                if ($Log) {Write-Logfile "Used quantity $($Licence.UsedQuant) is greater than allowed quantity $($Licence.AbsQuant)"}
+                if ($Licence.OperState -match "license-graceperiod"){
+                    $ConvertedGracePeriod = (New-TimeSpan -Seconds $Licence.GracePeriodUsed).Days
+                    if ($Log) {Write-Logfile "$($Licence.Feature) (SKU: $($Licence.Sku)) is in grace period ($($ConvertedGracePeriod) days)"}
+                    if ($ConvertedGracePeriod -gt 90){
+                        $serversummary += "$($Licence.Feature) (SKU: $($Licence.Sku)) is in grace period ($($ConvertedGracePeriod) days) and has less than 30 days until expiry;"
+                        $FICOK = $false
+                        }
+                    }
+                }
 
+            else{
+                if ($Log) {Write-Logfile "Used quantity $($Licence.UsedQuant) is NOT greater than allowed qunatity $($Licence.AbsQuant) - licence OK"}
+                }
+            }
     
         #Keyring check
         $UCSTrustPoint = Get-UCSTrustPoint
