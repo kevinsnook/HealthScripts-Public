@@ -617,7 +617,6 @@ foreach ($UCSMServer in $UCSMServers){
                 write-host "Uptime:" -nonewline
                 
                 $ComputeReboot = $null
-                #$ComputeReboot = Get-UcsManagedObject -ClassId ComputeRebootLog | where {$_.Dn -match $UCSserver.Dn } | Sort-Object TimeStamp | select -Last 1 | select PwrChangeSrc,TimeStamp
                 $ComputeReboot = Get-UcsManagedObject -ClassId ComputeRebootLog | where {$UCSserver.Dn.split("/")[1] -eq $_.Dn.split("/")[1]} | Sort-Object TimeStamp | select -Last 1 | select PwrChangeSrc,TimeStamp
     
                 [datetime]$ServerBootTime = $ComputeReboot.TimeStamp
@@ -914,7 +913,7 @@ if ($ReportMode -or $SendEmail)
             }
         else
             {
-            $hours = [int]$($reportline."uptime (hrs)")
+            $hours = $($reportline."uptime (hrs)")
             if ($hours -lt $MinimumUptime)
                 {
                 $htmltablerow += "<td class=""warn"">$hours</td>"
@@ -951,7 +950,7 @@ if ($ReportMode -or $SendEmail)
             }
         else
             {
-            $hours = [int]$($reportline."uptime (hrs)")
+            $hours = $($reportline."uptime (hrs)")
             if ($hours -lt $MinimumUptime)
                 {
                 $htmltablerow += "<td class=""warn"">$hours</td>"
