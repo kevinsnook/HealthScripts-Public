@@ -617,20 +617,22 @@ foreach ($UCSMServer in $UCSMServers){
                 write-host "Uptime:" -nonewline
                 
                 $ComputeReboot = $null
-                $ComputeReboot = Get-UcsManagedObject -ClassId ComputeRebootLog | where {$_.Dn -match $UCSserver.Dn } | Sort-Object TimeStamp | select -Last 1 | select PwrChangeSrc,TimeStamp
+                #$ComputeReboot = Get-UcsManagedObject -ClassId ComputeRebootLog | where {$_.Dn -match $UCSserver.Dn } | Sort-Object TimeStamp | select -Last 1 | select PwrChangeSrc,TimeStamp
+                $ComputeReboot = Get-UcsManagedObject -ClassId ComputeRebootLog | where {$UCSserver.Dn.split("/")[1] -eq $_.Dn.split("/")[1]} | Sort-Object TimeStamp | select -Last 1 | select PwrChangeSrc,TimeStamp
+    
                 [datetime]$ServerBootTime = $ComputeReboot.TimeStamp
                 if ($Log) {Write-Logfile "Original timestamp:$($ServerBootTime)"}
-                [datetime]$ServerBootTime = $ServerBootTime.AddMinutes(-$GMTOffsetMinutes)
-                if ($Log) {Write-Logfile "Adjusted timestamp:$($ServerBootTime)"}
-                if ($Log) {Write-Logfile "Server Last Power Transition ($($ComputeReboot.PwrChangeSrc)): $($ServerBootTime)"}
+                [datetime]$AdjustedServerBootTime = $ServerBootTime.AddMinutes(-$GMTOffsetMinutes)
+                if ($Log) {Write-Logfile "Adjusted timestamp:$($AdjustedServerBootTime)"}
+                if ($Log) {Write-Logfile "Server Last Power Transition ($($ComputeReboot.PwrChangeSrc)): $($AdjustedServerBootTime)"}
                 $Serveruptimehours = $null
-                $Serveruptimehours = [math]::round((New-TimeSpan -Start $ServerBootTime -End (Get-Date).AddMinutes(-$GMTOffsetMinutes)).TotalHours,0)
+                $Serveruptimehours = [math]::round((New-TimeSpan -Start $AdjustedServerBootTime -End (Get-Date).AddMinutes(-$GMTOffsetMinutes)).TotalHours,1)
                 write-host "Server Uptime: $($Serveruptimehours)" 
                 if ($Log) {Write-Logfile "Server Uptime: $($Serveruptimehours)"}
                 
                 if ($Serveruptimehours -lt $MinimumUptime){
                    Write-Host -ForegroundColor $warn "Uptime is less than $($MinimumUptime) hours ($($Serveruptimehours))"
-                   $serversummary += "$($serverIdentity) - Uptime is less than $($MinimumUptime) hours ($($Serveruptimehours))"
+                   $serversummary += "$($serverIdentity) - Uptime is less than $($MinimumUptime) hours ($($Serveruptimehours)): Last Power Transition ($($ComputeReboot.PwrChangeSrc)) at $($ServerBootTime)"
                    }
                 else{
                     Write-Host -ForegroundColor $pass "Uptime is more than $($MinimumUptime) hours ($($Serveruptimehours))"
