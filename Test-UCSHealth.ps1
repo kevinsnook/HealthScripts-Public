@@ -617,8 +617,15 @@ foreach ($UCSMServer in $UCSMServers){
                 write-host "Uptime:" -nonewline
                 
                 $ComputeReboot = $null
-                $ComputeReboot = Get-UcsManagedObject -ClassId ComputeRebootLog | where {$UCSserver.Dn.split("/")[1] -eq $_.Dn.split("/")[1]} | Sort-Object TimeStamp | select -Last 1 | select PwrChangeSrc,TimeStamp
-    
+                #$ComputeReboot = Get-UcsManagedObject -ClassId ComputeRebootLog | where {$UCSserver.Dn.split("/")[1] -eq $_.Dn.split("/")[1]} | Sort-Object TimeStamp | select -Last 1 | select PwrChangeSrc,TimeStamp
+                if ($UCSserver.Rn -match "blade"){
+                    if ($Log) {Write-Logfile "$($UCSserver.Rn) is a blade"}
+                    $ComputeReboot = Get-UcsManagedObject -ClassId ComputeRebootLog | where {$UCSserver.Rn -eq $_.Dn.split("/")[2]}  | Sort-Object TimeStamp | select -Last 1 | select PwrChangeSrc,TimeStamp
+                    }
+                else{
+                    if ($Log) {Write-Logfile "$($UCSserver.Rn) is a rack server"}
+                    $ComputeReboot = Get-UcsManagedObject -ClassId ComputeRebootLog | where {$UCSserver.Rn -eq $_.Dn.split("/")[1]}  | Sort-Object TimeStamp | select -Last 1 | select PwrChangeSrc,TimeStamp
+                    }
                 [datetime]$ServerBootTime = $ComputeReboot.TimeStamp
                 if ($Log) {Write-Logfile "Original timestamp:$($ServerBootTime)"}
                 [datetime]$AdjustedServerBootTime = $ServerBootTime.AddMinutes(-$GMTOffsetMinutes)
